@@ -126,7 +126,7 @@ else
 fi 
 
 
-if dnf  -y install libstdc++.i686
+if dnf  -y install libstdc++
 then
 	echo "Installed libstdc++.i686 " >> /tmp/.vc4InstallationLog.txt
 else
