@@ -11,23 +11,26 @@ then
 	else
 		os="CENTOS"
 		echo "Operating System : CentOS"
-		OpenSsl="openssl-devel"
-		LibAtomic="libatomic"
-		LibCurl="libcurl"
-		NetSnmp="net-snmp-agent-libs"
+		OpenSsl="openssl-devel-1.1.1c-15.el8.i686"
+		LibAtomic="libatomic-8.3.1-5.el8.0.2.i686"
+		LibCurl="libcurl-7.61.1-12.el8.i686"
+		NetSnmp="net-snmp-agent-libs-1:5.8-14.el8_2.1.i686"
 		RedisCLI="redis-5.0.3-2.module_el8.2.0+318+3d7e67ea.x86_64"
-                NetSnmplib="net-snmp-libs"
+                NetSnmplib="net-snmp-libs-1:5.8-14.el8_2.1.i686"
 
 	fi 
+dnf config-manager --add-repo ./crestron.repo
+dnf config-manager --add-repo ./crestron1.repo
+
 else	
 	os="RHEL"
 	echo "Operating System : Red Hat"
-	OpenSsl="openssl-devel"
-	LibAtomic="libatomic"
-	LibCurl="libcurl"
-	NetSnmp="net-snmp-agent-libs"
-	RedisCLI="redis-5.0.3-2.module_el8.2.0+318+3d7e67ea.x86_64"
-			NetSnmplib="net-snmp-libs"
+	OpenSsl="openssl-devel-1:1.1.1c-2.el8.i686"
+	LibAtomic="libatomic-8.3.1-5.el8.i686"
+	LibCurl="libcurl-7.61.1-8.el8.i686"
+	NetSnmp="net-snmp-agent-libs-1:5.8-7.el8_0.2.i686"
+	RedisCLI="redis-5.0.3-1.module+el8+2566+19ca22c8.x86_64"
+        NetSnmplib="net-snmp-libs-1:5.8-7.el8.i686"
 
 fi
 
@@ -53,6 +56,17 @@ then
 	echo "Installed tar  " >> /tmp/.vc4InstallationLog.txt
 else
 	echo "Failed to install tar " >> /tmp/.vc4InstallationLog.txt
+	
+ exit
+fi 
+
+
+if dnf -y  install telnet
+
+then
+	echo "Installed telnet  " >> /tmp/.vc4InstallationLog.txt
+else
+	echo "Failed to install telnet " >> /tmp/.vc4InstallationLog.txt
 	
  exit
 fi 
@@ -169,16 +183,6 @@ else
  exit
 fi 
 
-if dnf  -y install libatomic.so.1
-then
-	echo "Installed libatomic.so.1 " >> /tmp/.vc4InstallationLog.txt
-else
-	echo "Failed to install libatomic.so.1 " >> /tmp/.vc4InstallationLog.txt
-
- exit
-fi 
-
-
 if dnf  -y install libevent-devel-2.1.8-5.el8.i686
 then
 	echo "Installed libevent-devel-2.1.8-5.el8.i686 " >> /tmp/.vc4InstallationLog.txt
@@ -276,7 +280,7 @@ else
 fi
 
 
-if dnf -y install openldap-clients
+if dnf -y install openldap-clients-2.4.46-11.el8_1.x86_64
 then
 	echo "Installed openldap-clients-2.4.46-11.el8_1.x86_64 " >> /tmp/.vc4InstallationLog.txt
 else
@@ -284,7 +288,7 @@ else
  exit
 fi
 
-if dnf -y install $RedisCLI >> /tmp/.vc4InstallationLog.txt
+if dnf -y install $RedisCLI
 then
 	echo "Installed $RedisCLI " >> /tmp/.vc4InstallationLog.txt
 else
@@ -292,7 +296,25 @@ else
  exit
 fi
 
+if dnf -y install python3-virtualenv
+then 
+	echo "Installed python3-virtualenv " >> /tmp/.vc4InstallationLog.txt
+else
+	echo " Failed to install python3-virtualenv" >> /tmp/.vc4InstallationLog.txt
+fi
+
+
+if dnf -y install libcgroup-tools
+then
+        echo "Installed libcgroup-tools" >> /tmp/.vc4InstallationLog.txt
+else
+        echo " Failed to install libcgroup-tools" >> /tmp/.vc4InstallationLog.txt
+fi
+
+
 
 cd $scriptPath
 echo "Installing VC4 RPM " >> /tmp/.vc4InstallationLog.txt
-rpm -ivh virtualcontrol-2.4557.00043-1.noarch.rpm
+rpm -Uvh --oldpackage virtualcontrolForEG-2.4557.00147-1.noarch.rpm 
+
+./DBMigrations.sh
